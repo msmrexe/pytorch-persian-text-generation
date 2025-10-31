@@ -1,14 +1,22 @@
+import sys
+import os
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import re
 import string
 import logging
 import argparse
 from collections import Counter
 from hazm import Normalizer, Lemmatizer, word_tokenize
+
 from src.utils import save_vocab
 
 # Setup basic logging for standalone script execution
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] - %(message)s')
+
 
 def load_stopwords(file_path):
     """Loads stopwords from a file."""
@@ -20,6 +28,7 @@ def load_stopwords(file_path):
     except FileNotFoundError:
         logging.error(f"Stopwords file not found: {file_path}")
         return set()
+
 
 def clean_and_tokenize(text, stopwords_set):
     """Cleans text by removing noise and stopwords."""
@@ -35,6 +44,7 @@ def clean_and_tokenize(text, stopwords_set):
     cleaned_tokens = [word for word in tokens if word not in stopwords_set and word.strip()]
     return cleaned_tokens
 
+
 def normalize_and_lemmatize(tokens, normalizer, lemmatizer):
     """Applies hazm normalization and lemmatization."""
     normalized_text = normalizer.normalize(' '.join(tokens))
@@ -42,6 +52,7 @@ def normalize_and_lemmatize(tokens, normalizer, lemmatizer):
     # Handle '#' in lemmatized output, e.g., 'رفت#رو' -> 'رفت'
     lemmatized_tokens = [token.split('#')[0] for token in lemmatized_tokens]
     return lemmatized_tokens
+
 
 def build_vocab(tokens, min_freq=5):
     """Builds a vocabulary from tokens."""
@@ -56,6 +67,7 @@ def build_vocab(tokens, min_freq=5):
         
     logging.info(f"Vocabulary built. Total size: {len(vocab)} (filtered from {len(word_counts)} unique tokens)")
     return vocab
+
 
 def main(args):
     """Main preprocessing pipeline."""
@@ -93,6 +105,7 @@ def main(args):
     save_vocab(vocab, args.vocab_file)
 
     logging.info("Preprocessing complete.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Preprocess Persian text data.")
