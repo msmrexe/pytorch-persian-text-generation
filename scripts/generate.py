@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import torch
 import torch.nn.functional as F
 import argparse
@@ -9,6 +15,7 @@ from hazm import Normalizer, Lemmatizer, word_tokenize
 from src.models.rnn import TextGenerationRNN
 from src.models.transformer import TextGenTransformer
 from src.utils import load_vocab, load_model, setup_logging
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate text using a trained model.")
@@ -32,6 +39,7 @@ def parse_args():
     
     return parser.parse_args()
 
+
 def preprocess_seed(text, vocab, n, normalizer, lemmatizer):
     """Preprocesses the seed text and returns the last n token indices."""
     unk_idx = vocab.get('<unk>', 1)
@@ -54,6 +62,7 @@ def preprocess_seed(text, vocab, n, normalizer, lemmatizer):
         
     return torch.tensor(context, dtype=torch.long)
 
+
 def sample_top_k(logits, k):
     """Performs Top-K sampling."""
     if k == 0:
@@ -72,6 +81,7 @@ def sample_top_k(logits, k):
     # Get the actual token index
     sampled_token_index = top_k_indices.gather(-1, sampled_index_in_top_k)
     return sampled_token_index.squeeze(-1)
+
 
 def generate_rnn(model, seed_indices, vocab, n, max_length, top_k, device):
     """Generates text using the RNN model."""
@@ -103,6 +113,7 @@ def generate_rnn(model, seed_indices, vocab, n, max_length, top_k, device):
             inputs = torch.cat((inputs[:, 1:], next_token_idx.unsqueeze(0).unsqueeze(0)), dim=1)
 
     return ' '.join([idx_to_word.get(i, '<unk>') for i in generated_indices])
+
 
 def generate_transformer(model, seed_indices, vocab, max_length, top_k, device):
     """Generates text using the Transformer model."""
@@ -139,6 +150,7 @@ def generate_transformer(model, seed_indices, vocab, max_length, top_k, device):
             decoder_input_indices.append(next_token_idx.item())
 
     return ' '.join([idx_to_word.get(i, '<unk>') for i in generated_indices])
+
 
 def main():
     setup_logging('logs/generate.log')
@@ -184,6 +196,7 @@ def main():
     print(generated_text)
     print("------------------------")
     logging.info(f"Generated text: {generated_text}")
+
 
 if __name__ == "__main__":
     main()
