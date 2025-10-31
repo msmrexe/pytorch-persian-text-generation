@@ -1,8 +1,13 @@
+import sys
+import os
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import argparse
-import os
 import logging
 from tqdm import tqdm
 import time
@@ -11,6 +16,7 @@ from src.dataset import prepare_dataloaders
 from src.models.rnn import TextGenerationRNN
 from src.models.transformer import TextGenTransformer
 from src.utils import setup_logging, save_plot, calculate_perplexity
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train a text generation model (RNN or Transformer).")
@@ -44,6 +50,7 @@ def parse_args():
     parser.add_argument('--d_ff', type=int, default=512, help='Feed-forward dim (for Transformer).')
 
     return parser.parse_args()
+
 
 def train_epoch(model, dataloader, optimizer, criterion, clip, device, model_type):
     model.train()
@@ -90,6 +97,7 @@ def train_epoch(model, dataloader, optimizer, criterion, clip, device, model_typ
         
     return total_loss / len(dataloader)
 
+
 def evaluate(model, dataloader, criterion, device, model_type):
     model.eval()
     total_loss = 0
@@ -117,6 +125,7 @@ def evaluate(model, dataloader, criterion, device, model_type):
             total_loss += loss.item()
             
     return total_loss / len(dataloader)
+
 
 def main(args):
     setup_logging(args.log_file)
@@ -196,6 +205,7 @@ def main(args):
     save_plot(train_losses, val_losses, f"{args.model_type.upper()} Model Loss", plot_save_path)
     
     logging.info("Training process finished.")
+
 
 if __name__ == "__main__":
     args = parse_args()
