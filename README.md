@@ -90,7 +90,7 @@ This introduces randomness, allowing the model to escape repetitive loops and pr
 ## Project Structure
 
 ```
-pytorch-persian-text-generation/
+pytorch-rnn-vs-transformer-persian-generation/
 ├── .gitignore              # Ignores Python cache, data, logs, and model files
 ├── LICENSE                 # MIT License file
 ├── README.md               # This file
@@ -116,8 +116,8 @@ pytorch-persian-text-generation/
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/msmrexe/pytorch-persian-text-generation.git
-    cd pytorch-persian-text-generation
+    git clone https://github.com/msmrexe/pytorch-rnn-vs-transformer-persian-generation.git
+    cd pytorch-rnn-vs-transformer-persian-generation
     ```
 
 2.  **Setup and Download Data:**
